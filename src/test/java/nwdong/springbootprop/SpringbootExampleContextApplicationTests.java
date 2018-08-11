@@ -17,9 +17,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 				,"nwdong.springbootprop.prop2-in-springboottest=prop2-value-in-springboottest"
 		}
 )
-@TestPropertySource("classpath:my-resources.properties")
-// use @PropertySource in src/main
-public class SpringbootExamplePropertiesApplicationTests {
+@TestPropertySource("classpath:my-resources.properties") //in src/main, use @PropertySource instead
+public class SpringbootExampleContextApplicationTests {
 	
 	@Autowired
 	MyClass1 myClz1;
@@ -38,10 +37,14 @@ public class SpringbootExamplePropertiesApplicationTests {
 
 	@Value("${nwdong.springbootprop.prop4-in-property-file}")
 	String prop4InPropertyFile;
+	
+	@Value("${nwdong.springbootprop.prop6}")
+	String prop6InSystemSet;
 
 	static {
 		// do NOT put those in property file if it's through system.getProperty 
         System.setProperty("nwdong.springbootprop.prop5", "prop5-value");
+        System.setProperty("nwdong.springbootprop.prop6", "prop6-value");
     }
 	
 	@Test
@@ -64,6 +67,12 @@ public class SpringbootExamplePropertiesApplicationTests {
 		System.out.println("from myclass2="+myClz2.getWhoAmI());
 		assertTrue("I am MyClass2".equals(myClz2.getWhoAmI()));
 		
+		/*
+		 * properties introduced from annotation or property file can NOT be used through System.getProperty
+		 * 
+		 * but properties introduced from System.setProperty can be injected through @Value
+		 */
+		
 		// NULL, it can't be accessed through System.getProperty() but return null instead of throwing exception
 		System.out.println("get prop1InSpringBootTest from System.getProperty(), result= " + System.getProperty("nwdong.springbootprop.prop1-in-springboottest"));
 		assertNull(System.getProperty("nwdong.springbootprop.prop1-in-springboottest"));
@@ -74,6 +83,10 @@ public class SpringbootExamplePropertiesApplicationTests {
 
 		System.out.println("get nwdong.springbootprop.prop5 from System.getProperty(), result=" + System.getProperty("nwdong.springbootprop.prop5"));
 		assertTrue("prop5-value".equals(System.getProperty("nwdong.springbootprop.prop5")));
+
+		System.out.println("prop6InSystemSet=" + prop6InSystemSet);
+		assertTrue("prop6-value".equals(prop6InSystemSet));
+
 	}
 
 }
