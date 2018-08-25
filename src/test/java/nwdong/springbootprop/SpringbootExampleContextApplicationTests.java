@@ -17,7 +17,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 				,"nwdong.springbootprop.prop2-in-springboottest=prop2-value-in-springboottest"
 		}
 )
-@TestPropertySource("classpath:my-resources.properties") //in src/main, use @PropertySource instead
+//in src/main, use @PropertySource instead
+@TestPropertySource({"classpath:my-resources.properties"
+					, "file:test-data/extra.properties"})
 public class SpringbootExampleContextApplicationTests {
 	
 	@Autowired
@@ -40,6 +42,9 @@ public class SpringbootExampleContextApplicationTests {
 	
 	@Value("${nwdong.springbootprop.prop6}")
 	String prop6InSystemSet;
+
+	@Value("${test.extra.prop}")
+	String extraProp;
 
 	static {
 		// do NOT put those in property file if it's through system.getProperty 
@@ -87,6 +92,8 @@ public class SpringbootExampleContextApplicationTests {
 		System.out.println("prop6InSystemSet=" + prop6InSystemSet);
 		assertTrue("prop6-value".equals(prop6InSystemSet));
 
+		System.out.println("extraProp=" + extraProp);
+		assertTrue("hi extra prop".equals(extraProp));
 	}
 
 }
